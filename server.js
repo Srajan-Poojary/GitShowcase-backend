@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: "https://git-showcase-frontend.vercel.app",
+    origin: "http://localhost:5173",
   })
 );
 
@@ -55,6 +55,34 @@ app.get("/api/github/avatar/:username", async (req, res) => {
   }
 });
 
+app.get("/api/github/user-exists/:username", async (req, res) => {
+  const { username } = req.params;
+  try {
+    const response = await axios.get(
+      `https://api.github.com/users/${username}`,
+      {
+        headers: {
+          Authorization: `token ${process.env.GITHUB_KEY}`,
+        },
+      }
+    );
+    // If the request is successful and the user exists, return true
+    if (response.status === 200) {
+      return res.status(200).json({ exists: true });
+    }
+  } catch (error) {
+    // If the status is 404, it means the user does not exist
+    if (error.response && error.response.status === 404) {
+      return res.status(200).json({ exists: false });
+    } else {
+      // Log the error for debugging purposes
+      // If there is any other kind of error, return a server error status
+      return res
+        .status(500)
+        .json({ error: "Failed to determine if user exists" });
+    }
+  }
+});
 app.post("/api/github/contributions", async (req, res) => {
   const { username } = req.body;
 
