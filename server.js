@@ -57,12 +57,13 @@ app.get("/api/github/avatar/:username", async (req, res) => {
 
 app.get("/api/github/user-exists/:username", async (req, res) => {
   const { username } = req.params;
+
   try {
     const response = await axios.get(
       `https://api.github.com/users/${username}`,
       {
         headers: {
-          Authorization: `token ${process.env.GITHUB_KEY}`,
+          Authorization: `token ${process.env.github_key}`,
         },
       }
     );
@@ -71,6 +72,7 @@ app.get("/api/github/user-exists/:username", async (req, res) => {
       return res.status(200).json({ exists: true });
     }
   } catch (error) {
+    console.log("error", error);
     // If the status is 404, it means the user does not exist
     if (error.response && error.response.status === 404) {
       return res.status(200).json({ exists: false });
