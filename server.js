@@ -13,7 +13,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:5173",
-      "https://git-showcase-frontend.vercel.app/",
+      "https://git-showcase-frontend.vercel.app",
     ],
   })
 );
